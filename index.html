@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>顺序连线</title>
+		<link rel="stylesheet" type="text/css" href="css/file.css" />
+		<script src="jquery-2.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+
+	</head>
+	<body>
+		<div id="app">
+			<div :class="sky">
+				<div :class="max" @click="an($event,item)" v-for="item in sums">{{item}}</div>
+			</div>
+			<div @click="anr(0)" class="an">下一关</div>
+			<a href="8.html">随机数</a>
+		</div>
+		<canvas id="myCanvas" width="1200" height="540" style="position: absolute;top:0;left:0 ;z-index:-99 ;"></canvas>
+	</body>
+	<script type="text/javascript">
+		var app = new Vue({
+			el: '#app',
+			data: {
+				max:'maxKo',
+				suky:'',
+				sky:'maxTent',
+				sums: 8,
+				prenum: {
+					"leftt": 0,
+					"topp": 0
+				},
+				is: 0,
+				sum: null,
+				kuy:1,
+			},
+			methods: {
+				sku(){
+					let data = $('.maxKo');
+					console.log(data)
+					return false;
+					for(let k =0;k<25;k++){
+						data[k].style.position='relative'
+						data[k].style.top = Math.round(Math.random()*(50-30)+30)+'px';
+						data[k].style.left = Math.round(Math.random()*300)+'px';
+					}
+				},
+				anr(i) {
+					if(i == 0){
+						this.$data.sums = 25;
+						this.$data.max = 'maxKoR';
+					}else if(i == 1){
+						this.$data.sky = 'maxTentR';
+						if(this.$data.kuy == 1){
+							this.$data.kuy++
+							let data = $('.maxKo');
+							for(let k =0;k<data.length;k++){
+								data[k].style.position='relative'
+								data[k].style.top = Math.round(Math.random()*(90-30)+50)+'px';
+								data[k].style.left = Math.round(Math.random()*500)+'px';
+							}
+						}else if(this.$data.kuy == 2){
+							this.$data.kuy=1
+							this.$data.sums = 25;
+							this.sku()
+						}
+						
+					}
+				},
+				an(event, i) {
+					let sum = event.srcElement.className;
+					// 点击选择
+					event.srcElement.className = event.srcElement.className + ' set';
+					//控制连线
+					var is = i / 2;
+					var c = document.getElementById("myCanvas");
+					var ctx = c.getContext("2d");
+					ctx.strokeStyle = "#cbc7ce";
+					if (this.$data.is == 0) {
+						this.$data.is++
+						this.$data.sum = i
+						this.$data.prenum.leftt = event.path[0].offsetLeft + event.path[0].offsetWidth;
+						this.$data.prenum.topp = event.path[0].offsetTop + event.path[0].offsetHeight / 2;
+					} else if (this.$data.is == 1) {
+						this.$data.is = 0
+						let com = this.$data.sum - i;
+						console.log(com)
+						if (com == 1 || com == -1) {
+							if (this.$data.prenum.leftt != 0 && this.$data.prenum.topp != 0) {
+								ctx.moveTo(this.$data.prenum.leftt, this.$data.prenum.topp); //开始线
+								ctx.lineTo(event.path[0].offsetLeft, event.path[0].offsetTop + event.path[0]
+									.offsetHeight / 2); //结束线
+								ctx.stroke();
+								this.$data.prenum = {
+									"leftt": 0,
+									"topp": 0
+								}; //
+							}
+						}else if (com != -1 || com != 1) {
+							console.log('错误')
+							this.$data.is++
+							event.srcElement.className = sum;
+						}
+					}
+				}
+			}
+		})
+	</script>
+</html>
