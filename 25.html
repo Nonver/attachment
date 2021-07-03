@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="./css/filer.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.12/lib/index.css" />
+		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+
+			<div :class="sky">
+				<div :class="max" @click="an($event,item)" v-for="item in sums">{{item+1}}</div>
+			</div>
+			<div @click="wan(1)" class="an" style="margin-top: 50px;">结束</div>
+			<div class="an">{{time}}</div>
+			<a href="index.html">首页</a>
+		</div>
+		<canvas id="myCanvas" width="1200" height="1920"
+			style="position: absolute;top:0;left:0 ;z-index:-99 ;"></canvas>
+		<script type="text/javascript">
+			var app = new Vue({
+				el: '#app',
+				data: {
+					time: 300,
+					max: 'maxKo',
+					suky: '',
+					sky: 'maxTent',
+					sums: 24,
+					prenum: {
+						"leftt": 0,
+						"topp": 0
+					},
+					is: 0,
+					sum: null,
+					kuy: 1,
+				},
+				mounted() {
+					let that = this;
+					if(that.$data.time != 0){
+						let test = setInterval(function() {
+							that.$data.time--
+							if (that.$data.time <= 0) {
+								clearInterval(test);
+								for (let i = 0; i < data.length; i++) {
+									if (data[i].className == 'maxKo') {
+										that.$data.sum++;
+									}
+								}
+								alert(that.$data.sum + '未选择')
+								that.$data.time = 0
+							}
+							
+						}, 1000)
+						
+					}
+					
+
+					let data = $('.maxKo');
+					console.log(data)
+					for (let k = 0; k < data.length; k++) {
+						data[k].style.position = 'relative'
+						data[k].style.top = Math.round(Math.random() * (50 - 30) + 30) + 'px';
+						data[k].style.left = Math.round(Math.random() * 300) + 'px';
+					}
+				},
+				methods: {
+					wan(k) {
+						let data = $('.maxKo');
+						let sum = 0;
+						for (let i = 0; i < data.length; i++) {
+							if (data[i].className == 'maxKo') {
+								sum++;
+							}
+						}
+						this.$data.time = 0
+						alert(sum + '未选择')
+					},
+					sku() {
+						let data = $('.maxKo');
+						console.log(data)
+						for (let k = 0; k < 25; k++) {
+							data[k].style.position = 'relative'
+							data[k].style.top = Math.round(Math.random() * (50 - 30) + 30) + 'px';
+							data[k].style.left = Math.round(Math.random() * 300) + 'px';
+						}
+					},
+					anr(i) {
+						if (i == 0) {
+							this.$data.sums = 25;
+						} else if (i == 1) {
+							this.$data.sky = 'maxTentR';
+							if (this.$data.kuy == 1) {
+								this.$data.kuy++
+								let data = $('.maxKo');
+								for (let k = 0; k < data.length; k++) {
+									data[k].style.position = 'relative'
+									data[k].style.top = Math.round(Math.random() * (90 - 30) + 50) + 'px';
+									data[k].style.left = Math.round(Math.random() * 500) + 'px';
+								}
+							} else if (this.$data.kuy == 2) {
+								this.$data.kuy = 1
+								this.$data.sums = 25;
+								this.sku()
+							}
+
+						}
+					},
+					an(event, i) {
+						let sum = event.srcElement.className;
+						// 点击选择
+						event.srcElement.className = event.srcElement.className + ' set';
+						//控制连线
+						var is = i / 2;
+						var c = document.getElementById("myCanvas");
+						var ctx = c.getContext("2d");
+						ctx.strokeStyle = "#cbc7ce";
+						if (this.$data.is == 0) {
+							this.$data.is++
+							this.$data.sum = i
+							this.$data.prenum.leftt = event.path[0].offsetLeft + event.path[0].offsetWidth;
+							this.$data.prenum.topp = event.path[0].offsetTop + event.path[0].offsetHeight / 2;
+						} else if (this.$data.is == 1) {
+							this.$data.is = 0
+							let com = this.$data.sum - i;
+							console.log(com)
+							if (com == 1 || com == -1) {
+								if (this.$data.prenum.leftt != 0 && this.$data.prenum.topp != 0) {
+									ctx.moveTo(this.$data.prenum.leftt, this.$data.prenum.topp); //开始线
+									ctx.lineTo(event.path[0].offsetLeft, event.path[0].offsetTop + event.path[0]
+										.offsetHeight / 2); //结束线
+									ctx.stroke();
+									this.$data.prenum = {
+										"leftt": 0,
+										"topp": 0
+									}; //
+								}
+							} else if (com != -1 || com != 1) {
+								console.log('错误')
+								this.$data.is++
+								event.srcElement.className = sum;
+							}
+						}
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
